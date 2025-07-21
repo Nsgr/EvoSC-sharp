@@ -9,7 +9,6 @@ using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.UiControlModule.Interfaces;
 using LinqToDB;
-using LinqToDB.Common;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.UiControlModule.Services;
@@ -18,8 +17,8 @@ namespace EvoSC.Modules.Official.UiControlModule.Services;
 public class UiControlService(
     IManialinkManager manialinkManager,
     IModuleManager moduleManager,
-    IServiceContainerManager serviceContainerManager,
     IDbConnectionFactory dbConnFactory,
+    IPlayerCacheService playerCache,
     ILogger<UiControlService> logger
 ) : DbRepository(dbConnFactory), IUiControlService
 {
@@ -28,13 +27,12 @@ public class UiControlService(
     public async Task DisplayMenuAsync(IOnlinePlayer player)
     {
         //TODO: Get available modules.
-        //TODO: Get settings of user.
 
         var hiddenModules = new List<string>();
 
         if (player.Settings.HiddenManialinks != null)
         {
-            hiddenModules.AddRange(player.Settings.HiddenManialinks.Split(", "));
+            hiddenModules.AddRange(player.Settings.GetHiddenManialinks());
         }
 
         var modulesThatUseManialinkManager = moduleManager.LoadedModules
@@ -64,20 +62,14 @@ public class UiControlService(
 
     public async Task SaveSettingsAsync(IOnlinePlayer player, List<string> hiddenManialinks)
     {
-        string? hiddenManialinksString = null;
-
-        if (!hiddenManialinks.IsNullOrEmpty())
-        {
-            hiddenManialinksString = string.Join(", ", hiddenManialinks);
-        }
-
-        player.Settings.HiddenManialinks = hiddenManialinksString;
+        player.Settings.SetHiddenManialinks(hiddenManialinks);
 
         await Table<DbPlayerSettings>()
             .Where(dbPlayer => dbPlayer.PlayerId == player.Id)
-            .Set(settings => settings.HiddenManialinks, hiddenManialinksString)
+            .Set(settings => settings.HiddenManialinks, player.Settings.HiddenManialinks)
             .UpdateAsync();
 
         await manialinkManager.HideManialinkAsync(player, ConfigMenuTemplate);
+        await playerCache.UpdatePlayerAsync(player);
     }
 }
