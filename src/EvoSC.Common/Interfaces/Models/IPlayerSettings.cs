@@ -3,4 +3,6 @@
 public interface IPlayerSettings
 {
     public string DisplayLanguage { get; set; }
+    
+    public string? HiddenManialinks { get; set; }
 }

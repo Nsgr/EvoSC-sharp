@@ -13,4 +13,7 @@ public class DbPlayerSettings : IPlayerSettings
     
     [Column]
     public string DisplayLanguage { get; set; }
+
+    [Column] 
+    public string? HiddenManialinks { get; set; } = null;
 }
