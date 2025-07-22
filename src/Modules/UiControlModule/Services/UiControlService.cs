@@ -9,7 +9,6 @@ using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.UiControlModule.Interfaces;
 using LinqToDB;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.UiControlModule.Services;
 
@@ -17,44 +16,27 @@ namespace EvoSC.Modules.Official.UiControlModule.Services;
 public class UiControlService(
     IManialinkManager manialinkManager,
     IModuleManager moduleManager,
-    IDbConnectionFactory dbConnFactory,
     IPlayerCacheService playerCache,
-    ILogger<UiControlService> logger
+    IDbConnectionFactory dbConnFactory
 ) : DbRepository(dbConnFactory), IUiControlService
 {
     private const string ConfigMenuTemplate = "UiControlModule.Menu";
 
     public async Task DisplayMenuAsync(IOnlinePlayer player)
     {
-        //TODO: Get available modules.
-
         var hiddenModules = new List<string>();
-
         if (player.Settings.HiddenManialinks != null)
         {
             hiddenModules.AddRange(player.Settings.GetHiddenManialinks());
         }
 
         var modulesThatUseManialinkManager = moduleManager.LoadedModules
-            // .Where(moduleLoadContext =>
-            // {
-            //     try
-            //     {
-            //         return moduleLoadContext.Services.GetAllInstances(manialinkManager.GetType()).Any();
-            //     }
-            //     catch (ActivationException e)
-            //     {
-            //         logger.LogWarning("Couldn't detect manialink manager for {module}.",
-            //             moduleLoadContext.ModuleInfo.Name);
-            //
-            //         return false;
-            //     }
-            // })
-            .Select(moduleLoadContext => moduleLoadContext.ModuleInfo.Title)
+            .Select(moduleLoadContext => moduleLoadContext.ManialinkTemplates)
+            .SelectMany(a => a)
+            .Where(manialinkTemplate => !manialinkTemplate.Name.StartsWith("UiControl"))
+            .Where(manialinkTemplate => manialinkTemplate.Name.Split('.').Length <= 2)
+            .Select(manialinkTemplate => manialinkManager.GetEffectiveName(manialinkTemplate.Name))
             .ToList();
-
-        logger.LogInformation("Modules: {services}.", modulesThatUseManialinkManager);
-        logger.LogInformation("Hidden: {services}.", hiddenModules);
 
         await manialinkManager.SendManialinkAsync(player, ConfigMenuTemplate,
             new { hiddenModules, moduleNames = modulesThatUseManialinkManager });
@@ -71,5 +53,7 @@ public class UiControlService(
 
         await manialinkManager.HideManialinkAsync(player, ConfigMenuTemplate);
         await playerCache.UpdatePlayerAsync(player);
+
+        hiddenManialinks.ForEach(templateName => manialinkManager.HideManialinkAsync(player, templateName));
     }
 }

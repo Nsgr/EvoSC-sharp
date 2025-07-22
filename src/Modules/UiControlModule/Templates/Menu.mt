@@ -7,6 +7,7 @@
     <import component="EvoSC.Controls.Button" as="Button"/>
     <import component="EvoSC.Controls.Checkbox" as="Checkbox"/>
     <import component="EvoSC.HiddenEntry" as="HiddenEntry" />
+    <import component="EvoSC.Containers.Container" as="Container" />
 
     <property type="List<string>" name="moduleNames"/>
     <property type="List<string>" name="hiddenModules"/>
@@ -16,13 +17,19 @@
 
         <Window
                 width="120"
-                height="90"
+                height="100.5"
                 x="-30"
                 y="25"
                 title="UI Control"
                 icon=""
         >
-            <frame id="checkboxList">
+            <Container 
+                    id="checkboxList"
+                    width="120"
+                    height="78"
+                    scrollable="true"
+                    scrollHeight="{{ (moduleNames.Count - 13) * 6 }}"
+            >
                 <Checkbox
                         id="checkbox_{{ __index }}"
                         foreach="string moduleName in moduleNames"
@@ -30,14 +37,25 @@
                         isChecked='{{ hiddenModules.Contains(moduleName) }}'
                         text="{{ moduleName }}"
                 />
-            </frame>
+            </Container>
             
             <HiddenEntry
                     id="hiddenManialinksEntry"
                     name="HiddenManialinks"
             />
             
-            <Button id="btnSave" text="Submit" action="UiControlModule/SaveConfiguration" x="90" y="-42"/>
+            <frame pos="0 -81">
+                <Button
+                        id="btnSave"
+                        text="Submit"
+                        action="UiControlModule/SaveConfiguration"
+                />
+                <Button
+                        id="btnHideAll"
+                        text="Hide all"
+                        x="30"
+                />
+            </frame>
         </Window>
     </template>
 
@@ -45,7 +63,7 @@
         Void AttachDataToCheckboxes() {
             declare checkboxList <=> (Page.MainFrame.GetFirstChild("checkboxList") as CMlFrame);
             declare Text[] moduleNames = [{! string.Join(",", moduleNames.Select(name => "\u0022" + name + "\u0022")) !}];
-            declare moduleIndex = 0;
+            declare moduleIndex = 1; //Start at 1 because of container.
             
             foreach(name in moduleNames){
                 declare Control <=> checkboxList.Controls[moduleIndex];
@@ -69,9 +87,11 @@
             if(showModule){
                 if(hiddenModules.exists(moduleName)){
                     hiddenModules.remove(moduleName);
+                    log("removed " ^ moduleName);
                 }
             }else{
                 hiddenModules.add(moduleName);
+                    log("added " ^ moduleName);
             }
             
             hiddenManialinksEntry.Value = TextLib::Join("|", hiddenModules);
