@@ -12,6 +12,12 @@ public interface IUiControlService
     public Task DisplayMenuAsync(IOnlinePlayer player);
 
     /// <summary>
+    /// Returns a list of template names that can be hidden by the player.
+    /// </summary>
+    /// <returns></returns>
+    public List<string> GetTemplateNames();
+
+    /// <summary>
     /// Persists the hidden manialinks for the player.
     /// </summary>
     /// <param name="player"></param>

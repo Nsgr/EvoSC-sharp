@@ -18,8 +18,8 @@
         <Window
                 width="120"
                 height="100.5"
-                x="-30"
-                y="25"
+                x="-60"
+                y="55"
                 title="UI Control"
                 icon=""
         >
@@ -53,7 +53,8 @@
                 <Button
                         id="btnHideAll"
                         text="Hide all"
-                        x="30"
+                        action="UiControlModule/HideAll"
+                        x="22"
                 />
             </frame>
         </Window>
@@ -87,11 +88,9 @@
             if(showModule){
                 if(hiddenModules.exists(moduleName)){
                     hiddenModules.remove(moduleName);
-                    log("removed " ^ moduleName);
                 }
             }else{
                 hiddenModules.add(moduleName);
-                    log("added " ^ moduleName);
             }
             
             hiddenManialinksEntry.Value = TextLib::Join("|", hiddenModules);

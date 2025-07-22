@@ -19,4 +19,7 @@ public class UiControlManialinkController(IUiControlService uiControlService) : 
 
         await uiControlService.SaveSettingsAsync(Context.Player, hiddenManialinks);
     }
+
+    public Task HideAllAsync(UiControlEntryModel formData) =>
+        uiControlService.SaveSettingsAsync(Context.Player, uiControlService.GetTemplateNames());
 }

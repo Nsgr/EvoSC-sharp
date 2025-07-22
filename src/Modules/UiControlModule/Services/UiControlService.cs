@@ -25,21 +25,25 @@ public class UiControlService(
     public async Task DisplayMenuAsync(IOnlinePlayer player)
     {
         var hiddenModules = new List<string>();
+
         if (player.Settings.HiddenManialinks != null)
         {
             hiddenModules.AddRange(player.Settings.GetHiddenManialinks());
         }
 
-        var modulesThatUseManialinkManager = moduleManager.LoadedModules
+        await manialinkManager.SendManialinkAsync(player, ConfigMenuTemplate,
+            new { hiddenModules, moduleNames = GetTemplateNames() });
+    }
+
+    public List<string> GetTemplateNames()
+    {
+        return moduleManager.LoadedModules
             .Select(moduleLoadContext => moduleLoadContext.ManialinkTemplates)
             .SelectMany(a => a)
             .Where(manialinkTemplate => !manialinkTemplate.Name.StartsWith("UiControl"))
             .Where(manialinkTemplate => manialinkTemplate.Name.Split('.').Length <= 2)
             .Select(manialinkTemplate => manialinkManager.GetEffectiveName(manialinkTemplate.Name))
             .ToList();
-
-        await manialinkManager.SendManialinkAsync(player, ConfigMenuTemplate,
-            new { hiddenModules, moduleNames = modulesThatUseManialinkManager });
     }
 
     public async Task SaveSettingsAsync(IOnlinePlayer player, List<string> hiddenManialinks)

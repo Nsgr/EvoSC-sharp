@@ -61,6 +61,11 @@ public class LocalRecordsService(
         {
             foreach (var player in onlinePlayers)
             {
+                if (player.Settings.GetHiddenManialinks().Contains(WidgetName))
+                {
+                    continue;
+                }
+                
                 var playerRecords = GetRecordsWithPlayer(player, records);
                 await transaction.SendManialinkAsync(
                     player, 
