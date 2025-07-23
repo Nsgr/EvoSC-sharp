@@ -17,6 +17,10 @@ public interface ITrackerSettings
     [Option(DefaultValue = true),
      Description("Whether to store match state changes immediately instead of waiting until the match ends.")]
     public bool ImmediateStoring { get; set; }
+    
+    [Option(DefaultValue = true),
+    Description("Whether to record the maps that were played on the server.")]
+    public bool RecordMapChanges { get; set; }
 
     [Option(DefaultValue = true), Description("Record end of map states.")]
     public bool RecordEndMap { get; set; }

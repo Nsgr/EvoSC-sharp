@@ -114,6 +114,37 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         }
     }
 
+    public async Task TrackMapChangeAsync(MapEventArgs mapArgs)
+    {
+        if (!IsTracking)
+        {
+            return;
+        }
+        
+        await VerifyTracker();
+
+        IMatchState state;
+        
+        state = new MapMatchState
+        {
+            Status =
+                MatchStatus.Unknown, // FIXME Either we need to assume the match is running when the server map is changed (bad) or we override the status to unknown (also bad).
+            Timestamp = DateTime.UtcNow,
+            TimelineId = _currentTimeline.TimelineId,
+            MapUid = mapArgs.Map.Uid
+        };
+        
+        _currentTimeline.States.Add(state);
+
+        if (settings.ImmediateStoring)
+        {
+            await trackerStore.SaveState(state);
+        }
+        
+        await events.RaiseAsync(MatchTrackerEvent.StateTracked,
+            new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
+    }
+    
     public async Task<Guid> BeginMatchAsync()
     {
         if (IsTracking)

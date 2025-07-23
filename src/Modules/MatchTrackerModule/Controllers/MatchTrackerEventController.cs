@@ -30,6 +30,17 @@ public class MatchTrackerEventController(ITrackerSettings settings, IMatchTracke
         return tracker.BeginMatchAsync();
     }
 
+    [Subscribe(GbxRemoteEvent.BeginMap)]
+    public Task OnBeginMapAsync(object sender, MapEventArgs args)
+    {
+        if (!settings.RecordMapChanges)
+        {
+            return Task.CompletedTask;
+        }
+        
+        return tracker.TrackMapChangeAsync(args);
+    }
+
     [Subscribe(FlowControlEvent.MatchStarted)]
     public Task OnMatchStarted(object sender, EventArgs args)
     {
