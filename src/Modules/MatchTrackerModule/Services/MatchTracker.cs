@@ -128,7 +128,7 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         state = new MapMatchState
         {
             Status =
-                MatchStatus.Unknown, // FIXME Either we need to assume the match is running when the server map is changed (bad) or we override the status to unknown (also bad).
+                MatchStatus.Running,
             Timestamp = DateTime.UtcNow,
             TimelineId = _currentTimeline.TimelineId,
             MapUid = mapArgs.Map.Uid
