@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Models;
 using EvoSC.Modules.Official.MatchTrackerModule.Models;
+using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
 
@@ -11,7 +12,7 @@ public interface IMatchTracker
     public MatchStatus Status { get; }
     
     public Task TrackScoresAsync(ScoresEventArgs scoreArgs);
-    public Task TrackMapChangeAsync(MapEventArgs mapArgs);
+    public Task TrackMapChangeAsync(MapGbxEventArgs mapArgs);
     
     public Task<Guid> BeginMatchAsync();
     public Task<IMatchTimeline> EndMatchAsync();
