@@ -27,7 +27,7 @@ public class QueueController(IMapQueueService mapQueue, IServerClient server, IM
         }
         catch (Exception ex)
         {
-            logger.LogDebug(ex, "Failed to drop map '{MapUid}' from the queue", args.Map.Uid);
+            logger.LogDebug(ex, "Failed to drop map '{MapUid}' from the queue", args.Map.UId);
             
             if (mapQueue.QueuedMapsCount > 0)
             {

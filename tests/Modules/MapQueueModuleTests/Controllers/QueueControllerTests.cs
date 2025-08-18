@@ -46,7 +46,7 @@ public class QueueControllerTests : EventControllerTestBase<QueueController>
         _mapQueueServiceMock.Setup(m => m.QueuedMapsCount).Returns(1);
         _mapQueueServiceMock.Setup(m => m.PeekNextAsync()).Returns(Task.FromResult((IMap)map));
 
-        await Controller.OnBeginMapAsync(new object(), new MapGbxEventArgs { Map = new TmSMapInfo { Uid = "currentmap" } });
+        await Controller.OnBeginMapAsync(new object(), new MapGbxEventArgs { Map = new TmSMapInfo { UId = "currentmap" } });
         
         _server.Remote.Verify(m => m.ChooseNextMapAsync(map.FilePath));
     }

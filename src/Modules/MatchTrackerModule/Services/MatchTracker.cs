@@ -11,6 +11,7 @@ using EvoSC.Modules.Official.MatchTrackerModule.Events.EventArgObjects;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Models;
 using EvoSC.Modules.Official.MatchTrackerModule.Models;
+using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.MatchTrackerModule.Services;
 
@@ -114,7 +115,7 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         }
     }
 
-    public async Task TrackMapChangeAsync(MapEventArgs mapArgs)
+    public async Task TrackMapChangeAsync(MapGbxEventArgs mapArgs)
     {
         if (!IsTracking)
         {
@@ -131,7 +132,7 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
                 MatchStatus.Running,
             Timestamp = DateTime.UtcNow,
             TimelineId = _currentTimeline.TimelineId,
-            MapUid = mapArgs.Map.Uid
+            MapUid = mapArgs.Map.UId
         };
         
         _currentTimeline.States.Add(state);

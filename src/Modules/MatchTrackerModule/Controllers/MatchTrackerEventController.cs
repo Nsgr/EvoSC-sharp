@@ -7,6 +7,7 @@ using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
 using EvoSC.Modules.Official.MatchTrackerModule.Config;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
+using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.MatchTrackerModule.Controllers;
 
@@ -31,7 +32,7 @@ public class MatchTrackerEventController(ITrackerSettings settings, IMatchTracke
     }
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
-    public Task OnBeginMapAsync(object sender, MapEventArgs args)
+    public Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
         if (!settings.RecordMapChanges)
         {

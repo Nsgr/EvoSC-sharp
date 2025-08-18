@@ -17,5 +17,5 @@ public class WorldRecordEventController(IWorldRecordService worldRecordService) 
 
     [Subscribe(ModeScriptEvent.StartMapStart)]
     public Task OnMapStartAsync(object sender, MapEventArgs mapEventArgs)
-        => worldRecordService.FetchRecordAsync(mapEventArgs.Map.Uid);
+        => worldRecordService.FetchRecordAsync(mapEventArgs.Map.UId);
 }

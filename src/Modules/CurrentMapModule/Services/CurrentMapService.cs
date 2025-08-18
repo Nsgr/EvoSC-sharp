@@ -30,7 +30,7 @@ public class CurrentMapService(
 
     public async Task ShowWidgetAsync(MapGbxEventArgs args)
     {
-        await ShowManialinkAsync(args.Map.Uid, args.Map.AuthorTime);
+        await ShowManialinkAsync(args.Map.UId, args.Map.AuthorTime);
     }
 
     public async Task HideWidgetAsync()
