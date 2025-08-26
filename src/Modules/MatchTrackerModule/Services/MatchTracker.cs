@@ -157,9 +157,7 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         
         var map = await maps.GetCurrentMapAsync();
 
-        IMatchState state;
-        
-        state = new MapMatchState
+        var state  = new MapMatchState
         {
             Status =
                 MatchStatus.Running,
