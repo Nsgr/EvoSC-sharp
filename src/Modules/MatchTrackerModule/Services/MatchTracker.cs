@@ -159,8 +159,7 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
 
         var state  = new MapMatchState
         {
-            Status =
-                MatchStatus.Running,
+            Status = MatchStatus.Running,
             Timestamp = DateTime.UtcNow,
             TimelineId = _currentTimeline.TimelineId,
             MapUid = map?.Uid
